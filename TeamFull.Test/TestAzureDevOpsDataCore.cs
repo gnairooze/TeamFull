@@ -47,6 +47,7 @@ namespace TeamFull.Test
                 "System.AssignedTo", 
                 "System.CreatedDate",
                 "System.Tags",
+                "System.Parent",
                 "Microsoft.VSTS.Common.ActivatedDate", 
                 "Microsoft.VSTS.Common.ResolvedDate", 
                 "Microsoft.VSTS.Common.ResolvedBy", 
@@ -58,9 +59,7 @@ namespace TeamFull.Test
                 "Microsoft.VSTS.Scheduling.OriginalEstimate",
                 "LinkDevAgile.Source",
                 "LinkDevAgile.TestingEnvironment",
-                "Custom.TaskDueDate",
-                "System.Parent",
-                "Parent"
+                "Custom.TaskDueDate"
             };
 
             AzureDevOps.Data.Core core = new AzureDevOps.Data.Core(azureDevOpsOrganizationUrl, pat);

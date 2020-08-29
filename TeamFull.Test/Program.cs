@@ -11,11 +11,15 @@ namespace TeamFull.Test
 
         private static void Start()
         {
-            TestAzureDevOpsDataCore test = new TestAzureDevOpsDataCore();
+            //TestAzureDevOpsDataCore test = new TestAzureDevOpsDataCore();
             //test.TestProjects1();
             //test.TestQuery1();
             //test.TestGetItem1();
-            test.TestWorkItems1();
+            //test.TestWorkItems1();
+
+            TestAzureDevOpsDataWorkItemQuery test = new TestAzureDevOpsDataWorkItemQuery();
+            test.TestRunQueryEnhanced1();
+
         }
     }
 }
