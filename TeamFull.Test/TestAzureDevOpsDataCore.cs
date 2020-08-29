@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -8,12 +9,14 @@ namespace TeamFull.Test
     {
         public void TestQuery1()
         {
-            string azureDevOpsOrganizationUrl = "https://link-dev.visualstudio.com";
-            Guid projectID = Guid.Parse("2984ef00-bb46-42d0-bd1a-99498c4ed0f0");
-            string pat = "ucwgqwiifof3rcurzv7ji7wmns7phaf6lmmce3mg6pjv3wnmmhla";
+            string orgUrl = Environment.GetEnvironmentVariable("VSTS_URL", EnvironmentVariableTarget.User); ;
+            string pat = Environment.GetEnvironmentVariable("VSTS_PAT", EnvironmentVariableTarget.User);
+            string projectName = Environment.GetEnvironmentVariable("test_project", EnvironmentVariableTarget.User);
             string queryContent = "SELECT [Id], [Title], [State] FROM workitems WHERE [Work Item Type] = 'Bug' AND [Assigned To] = @Me";
-            AzureDevOps.Data.Core core = new AzureDevOps.Data.Core(azureDevOpsOrganizationUrl, pat);
+            AzureDevOps.Data.Core core = new AzureDevOps.Data.Core(orgUrl, pat);
             core.Connect();
+            JArray projects = core.GetProjects();
+            Guid projectID = Guid.Parse(projects.SelectToken($"$[?(@.Name == '{projectName}')].Id").ToString());
             var result = core.RunQuery(projectID, queryContent);
 
             Console.WriteLine(result);
@@ -21,12 +24,14 @@ namespace TeamFull.Test
 
         public void TestGetItem1()
         {
-            string azureDevOpsOrganizationUrl = "https://link-dev.visualstudio.com";
-            Guid projectID = Guid.Parse("2984ef00-bb46-42d0-bd1a-99498c4ed0f0");
-            string pat = "ucwgqwiifof3rcurzv7ji7wmns7phaf6lmmce3mg6pjv3wnmmhla";
+            string orgUrl = Environment.GetEnvironmentVariable("VSTS_URL", EnvironmentVariableTarget.User);
+            string pat = Environment.GetEnvironmentVariable("VSTS_PAT", EnvironmentVariableTarget.User);
+            string projectName = Environment.GetEnvironmentVariable("test_project", EnvironmentVariableTarget.User);
             int workItemId = 143124;
-            AzureDevOps.Data.Core core = new AzureDevOps.Data.Core(azureDevOpsOrganizationUrl, pat);
+            AzureDevOps.Data.Core core = new AzureDevOps.Data.Core(orgUrl, pat);
             core.Connect();
+            JArray projects = core.GetProjects();
+            Guid projectID = Guid.Parse(projects.SelectToken($"$[?(@.Name == '{projectName}')].Id").ToString());
             var result = core.GetWorkItem(projectID, workItemId);
 
             Console.WriteLine(result);
@@ -34,9 +39,9 @@ namespace TeamFull.Test
 
         public void TestWorkItems1()
         {
-            string azureDevOpsOrganizationUrl = "https://link-dev.visualstudio.com";
-            Guid projectID = Guid.Parse("2984ef00-bb46-42d0-bd1a-99498c4ed0f0");
-            string pat = "ucwgqwiifof3rcurzv7ji7wmns7phaf6lmmce3mg6pjv3wnmmhla";
+            string orgUrl = Environment.GetEnvironmentVariable("VSTS_URL", EnvironmentVariableTarget.User);
+            string pat = Environment.GetEnvironmentVariable("VSTS_PAT", EnvironmentVariableTarget.User);
+            string projectName = Environment.GetEnvironmentVariable("test_project", EnvironmentVariableTarget.User);
             string queryContent = "SELECT [Id], [Task Due Date], [Parent] FROM workitems WHERE [Work Item Type] = 'Task' AND [Assigned To] = @Me AND [State] NOT IN ('Removed', 'Closed', 'Resolved')";
             List<string> fields = new List<string>() { 
                 "System.Id", 
@@ -62,9 +67,11 @@ namespace TeamFull.Test
                 "Custom.TaskDueDate"
             };
 
-            AzureDevOps.Data.Core core = new AzureDevOps.Data.Core(azureDevOpsOrganizationUrl, pat);
+            AzureDevOps.Data.Core core = new AzureDevOps.Data.Core(orgUrl, pat);
             
             core.Connect();
+            JArray projects = core.GetProjects();
+            Guid projectID = Guid.Parse(projects.SelectToken($"$[?(@.Name == '{projectName}')].Id").ToString());
             var resultWorkItems = core.RunQuery(projectID, queryContent);
             List<int> workItemsIDs = new List<int>();
             List<int> parentsIDs = new List<int>();
@@ -92,9 +99,9 @@ namespace TeamFull.Test
 
         public void TestProjects1()
         {
-            string azureDevOpsOrganizationUrl = "https://link-dev.visualstudio.com";
-            string pat = "ucwgqwiifof3rcurzv7ji7wmns7phaf6lmmce3mg6pjv3wnmmhla";
-            AzureDevOps.Data.Core core = new AzureDevOps.Data.Core(azureDevOpsOrganizationUrl, pat);
+            string orgUrl = Environment.GetEnvironmentVariable("VSTS_URL", EnvironmentVariableTarget.User);
+            string pat = Environment.GetEnvironmentVariable("VSTS_PAT", EnvironmentVariableTarget.User);
+            AzureDevOps.Data.Core core = new AzureDevOps.Data.Core(orgUrl, pat);
             core.Connect();
             var result = core.GetProjects();
 

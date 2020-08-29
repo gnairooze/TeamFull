@@ -10,22 +10,15 @@ namespace AzureDevOps.Data
     {
         public WorkItemQuery(string orgUrl, string personalAccessToken) : base(orgUrl, personalAccessToken)
         {
-
+            this.Connect();
         }
 
         public JArray RunQueryEnhanced(Guid projectID, string queryContent, List<string> workItemFields)
         {
-            this.Connect();
             var resultWorkItemIDs = this.RunQuery(projectID, queryContent);
 
-            #region put work items IDs in a list
-            List<int> workItemsIDs = new List<int>();
-            foreach (var item in resultWorkItemIDs["WorkItems"].Children())
-            {
-                workItemsIDs.Add(item.Value<int>("Id"));
-            }
-            #endregion
-
+            List<int> workItemsIDs = resultWorkItemIDs["WorkItems"].Children().Select(x => x.Value<int>("Id")).ToList();
+            
             var resultWorkItems = this.GetWorkItems(projectID, workItemsIDs, workItemFields);
 
             if(workItemFields.IndexOf("System.Parent") == -1)
@@ -39,15 +32,7 @@ namespace AzureDevOps.Data
                 "System.Title"
             };
 
-            List<int> parentsIDs = new List<int>();
-            foreach (var item in resultWorkItems)
-            {
-                int parentId = int.Parse(item["Fields"]["System.Parent"].ToString());
-                if (parentsIDs.IndexOf(parentId) == -1)
-                {
-                    parentsIDs.Add(parentId);
-                }
-            }
+            List<int> parentsIDs = resultWorkItems.Select(x => int.Parse(x["Fields"]["System.Parent"].ToString())).Distinct().ToList();
 
             var resultParents = this.GetWorkItems(projectID, parentsIDs, parentFields);
 

@@ -11,7 +11,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AzureDevOps.Data\AzureDevOps.Data.csproj" />
-    <ProjectReference Include="..\TeamFull.Data\TeamFull.Data.csproj" />
   </ItemGroup>
 
 </Project>
